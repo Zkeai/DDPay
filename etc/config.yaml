@@ -1,0 +1,22 @@
+server:
+  network: "tcp"
+  address: ":2900"
+  readTimeout: 10s
+  writeTimeout: 10s
+db:
+  dsn: "aidog:muyuai0208..@tcp(101.35.215.15:3306)/aidog?parseTime=true"
+  active: 10
+  idle: 10
+  idleTimeout: 60s
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+mongo:
+  URI: ""
+  connectTimeout: 10s
+  socketTimeout: 10s
+telegram:
+  botToken: "7749709306:AAHKo_YlLmi-nwps0tBqpcftw92H3tuWjYc"
+grpc:
+  Endpoint: "https://solana-yellowstone-grpc.publicnode.com:443"
