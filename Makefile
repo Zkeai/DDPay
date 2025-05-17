@@ -1,14 +1,14 @@
+run-http:
+	go run ./cmd/http/main.go
+swag:
+	swag init -g cmd/http/main.go
+
 run-cron:
 	go run ./cmd/cron
 
-run-http:
-	go run ./cmd/http
  # 启动 HTTP 服务并开启调试器（Delve）
 debug-http:
 	dlv debug ./cmd/http/main.go --headless --listen=:2345 --api-version=2 --accept-multiclient
-
-run-grpc:
-	go run ./cmd/grpc
 
 
 protoc:

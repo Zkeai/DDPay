@@ -1,0 +1,51 @@
+basePath: /api/v1
+definitions:
+  conf.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  conf.ResponseError:
+    properties:
+      code:
+        type: integer
+      err:
+        type: string
+      msg:
+        type: string
+    type: object
+host: localhost:2900
+info:
+  contact: {}
+  description: DDpay https://github.com/zkeai/DDPay
+  title: DDPay API
+  version: 1.0.0
+paths:
+  /test/test:
+    get:
+      parameters:
+      - description: 测试消息
+        in: query
+        name: msg
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.ResponseError'
+        "500":
+          description: 内部错误
+          schema:
+            type: string
+      summary: 接口测试
+      tags:
+      - test
+swagger: "2.0"

@@ -1,4 +1,4 @@
-package dto
+package model
 
 type ChannelDTO struct {
 	UserID         int    `json:"user_id" binding:"required"`

@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"syscall"
 
-	cconf "github.com/Zkeai/go_template/common/conf"
-	"github.com/Zkeai/go_template/common/cron"
-	"github.com/Zkeai/go_template/common/logger"
-	"github.com/Zkeai/go_template/common/util"
-	"github.com/Zkeai/go_template/internal/conf"
+	cconf "github.com/Zkeai/DDPay/common/conf"
+	"github.com/Zkeai/DDPay/common/cron"
+	"github.com/Zkeai/DDPay/common/logger"
+	"github.com/Zkeai/DDPay/common/utils"
+	"github.com/Zkeai/DDPay/internal/conf"
 	"github.com/ouqiang/goutil"
 )
 
@@ -50,7 +50,7 @@ func initEnv() {
 	logger.InitLogger()
 	AppDir, _ = goutil.WorkDir()
 	LogDir = filepath.Join(AppDir, "/log")
-	util.CreateDirIfNotExists(LogDir)
+	utils.CreateDirIfNotExists(LogDir)
 
 	// 读取配置
 	filePath = flag.String("conf", "etc/config.yaml", "the config path")

@@ -1,0 +1,78 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "DDpay https://github.com/zkeai/DDPay",
+        "title": "DDPay API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "localhost:2900",
+    "basePath": "/api/v1",
+    "paths": {
+        "/test/test": {
+            "get": {
+                "tags": [
+                    "test"
+                ],
+                "summary": "接口测试",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "测试消息",
+                        "name": "msg",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "conf.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "conf.ResponseError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "err": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

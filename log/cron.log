@@ -1,0 +1,6 @@
+2025-05-17/13:39:15 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#30行#[[Log dir is:  /Users/chole/web3/DDPay/log]]
+2025-05-17/14:37:55 [ERR] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#51行#[[open etc/config.yaml: no such file or directory]]
+2025-05-17/14:53:02 [INF] #/Users/chole/web3/DDPay/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Start#31行#[[CronService starting...]]
+2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/cmd/cron/main.go#main.main#40行#[[Shutting down CronService...]]
+2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Stop.func1#40行#[[CronService stopping...]]
+2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).Stop#158行#[[Cron stopped]]

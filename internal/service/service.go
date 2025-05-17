@@ -18,7 +18,7 @@ func NewService(conf *conf.Conf, tg *telegram.TelegramService) *Service {
 		repo:      repo.NewRepo(conf),
 		tgService: tg,
 	}
-	telegram.RegisterUpsertChannelHandler(s.UpsertChannel)
+
 	return s
 
 }

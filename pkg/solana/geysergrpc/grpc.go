@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/Zkeai/go_template/pkg/solana/geysergrpc/proto"
+	"github.com/Zkeai/DDPay/pkg/solana/geysergrpc/proto"
 	"github.com/mr-tron/base58"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

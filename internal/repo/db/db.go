@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/Zkeai/go_template/common/database"
+	"github.com/Zkeai/DDPay/common/database"
 )
 
 type DB struct {

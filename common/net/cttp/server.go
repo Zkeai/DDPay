@@ -3,7 +3,7 @@ package cttp
 import (
 	"context"
 	"fmt"
-	"github.com/Zkeai/go_template/common/util"
+	"github.com/Zkeai/DDPay/common/utils"
 	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
@@ -27,7 +27,7 @@ func NewServer(conf *Config) *Server {
 	s.RouterGroup = &s.engine.RouterGroup
 
 	//解决跨域
-	s.engine.Use(util.Cors())
+	s.engine.Use(utils.Cors())
 
 	return s
 }

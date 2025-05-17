@@ -3,8 +3,8 @@ package telegram
 import (
 	"context"
 	"encoding/base64"
-	"github.com/Zkeai/go_template/common/redis"
-	"github.com/Zkeai/go_template/internal/dto"
+	"github.com/Zkeai/DDPay/internal/model"
+	"github.com/Zkeai/DDPay/pkg/redis"
 	"strconv"
 	"strings"
 	"time"
@@ -101,8 +101,8 @@ func (s *TelegramService) handleStartCommand(chatID int64, args string) {
 	// 返回成功信息
 
 	userIDInt, _ := strconv.Atoi(userID)
-	var req *dto.ChannelDTO
-	req = &dto.ChannelDTO{
+	var req *model.ChannelDTO
+	req = &model.ChannelDTO{
 		UserID:    userIDInt,
 		ChannelID: "telegram",
 		Name:      tgName,
