@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/Zkeai/DDPay/common/utils"
+	"github.com/ouqiang/goutil"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -10,9 +12,7 @@ import (
 	cconf "github.com/Zkeai/DDPay/common/conf"
 	"github.com/Zkeai/DDPay/common/cron"
 	"github.com/Zkeai/DDPay/common/logger"
-	"github.com/Zkeai/DDPay/common/utils"
 	"github.com/Zkeai/DDPay/internal/conf"
-	"github.com/ouqiang/goutil"
 )
 
 var (
@@ -46,9 +46,12 @@ func main() {
 }
 
 func initEnv() {
-	// logger 初始化
+	//logger 初始化
 	logger.InitLogger()
-	AppDir, _ = goutil.WorkDir()
+	AppDir, err := goutil.WorkDir()
+	if err != nil {
+		logger.Fatal(err)
+	}
 	LogDir = filepath.Join(AppDir, "/log")
 	utils.CreateDirIfNotExists(LogDir)
 
@@ -57,7 +60,7 @@ func initEnv() {
 	flag.Parse()
 
 	c := new(conf.Conf)
-	err := cconf.Unmarshal(*filePath, c)
+	err = cconf.Unmarshal(*filePath, c)
 	if err != nil {
 		logger.Fatal("Failed to load config:", err)
 	}

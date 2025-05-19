@@ -15,17 +15,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/test/test": {
+        "/order/create-transaction": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "创建订单",
+                "parameters": [
+                    {
+                        "description": "用户登录提交参数",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "内部错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/status": {
             "get": {
                 "tags": [
-                    "test"
+                    "order"
                 ],
-                "summary": "接口测试",
+                "summary": "获取当前订单状态",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "测试消息",
-                        "name": "msg",
+                        "description": "订单key",
+                        "name": "order",
                         "in": "query",
                         "required": true
                     }
@@ -44,9 +89,9 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "内部错误",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/conf.ResponseError"
                         }
                     }
                 }
@@ -76,6 +121,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.OrderReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "notify_url": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "pid": {
+                    "type": "integer"
+                },
+                "redirect_url": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                },
+                "trade_type": {
                     "type": "string"
                 }
             }

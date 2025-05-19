@@ -6,6 +6,8 @@ swag:
 run-cron:
 	go run ./cmd/cron
 
+run-wallet:
+	go run ./cmd/wallet
  # 启动 HTTP 服务并开启调试器（Delve）
 debug-http:
 	dlv debug ./cmd/http/main.go --headless --listen=:2345 --api-version=2 --accept-multiclient

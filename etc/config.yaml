@@ -4,7 +4,7 @@ server:
   readTimeout: 10s
   writeTimeout: 10s
 db:
-  dsn: "aidog:muyuai0208..@tcp(101.35.215.15:3306)/aidog?parseTime=true"
+  dsn: "ddpay:muyuai0208..@tcp(101.35.215.15:3306)/ddpay?parseTime=true"
   active: 10
   idle: 10
   idleTimeout: 60s
@@ -12,11 +12,11 @@ redis:
   addr: "127.0.0.1:6379"
   password: ""
   db: 0
-mongo:
-  URI: ""
-  connectTimeout: 10s
-  socketTimeout: 10s
 telegram:
   botToken: "7749709306:AAHKo_YlLmi-nwps0tBqpcftw92H3tuWjYc"
-grpc:
-  Endpoint: "https://solana-yellowstone-grpc.publicnode.com:443"
+evm:
+  mnemonic: "select width deliver spin police tube disorder order climb coconut fatal plate"
+  rpc: ""
+solana:
+  grpc: "https://solana-yellowstone-grpc.publicnode.com:443"
+

@@ -26,11 +26,11 @@ func InitRouter(s *chttp.Server, service *service.Service) {
 		c.JSON(http.StatusOK, conf.Response{Code: 200, Msg: "success", Data: "AIDog"})
 	})
 
-	// 用户相关路由
-	ug := g.Group("/test")
-
+	//order
+	wg := g.Group("/order")
 	{
-		ug.GET("/test", test)
+		wg.POST("/create-transaction", createTransaction)
+		wg.GET("/status", getOrderStatus)
 	}
 
 }

@@ -4,3 +4,12 @@
 2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/cmd/cron/main.go#main.main#40行#[[Shutting down CronService...]]
 2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Stop.func1#40行#[[CronService stopping...]]
 2025-05-17/14:53:16 [INF] #/Users/chole/web3/DDPay/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).Stop#158行#[[Cron stopped]]
+2025-05-17/18:21:24 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#45行#当前工作目录: /Users/chole/web3/DDPay
+2025-05-17/18:21:24 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#46行#[[0x140002bfbf0]]
+2025-05-17/18:21:24 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#53行#派生器对象: &{mnemonic:select width deliver spin police tube disorder order climb coconut fatal plate wallet:0x14000129290}
+2025-05-17/18:21:24 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#61行#派生地址: 0x40DCf20D0CA8401622be1Bb60c6D786C52D27618
+2025-05-17/18:21:24 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#62行#私钥: 0x7496d6489d46ea85b2ace0f9b238a57c30714cb32ff5baf87689e9ae29a280ce
+2025-05-17/18:22:51 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#51行#派生地址: 0x40DCf20D0CA8401622be1Bb60c6D786C52D27618
+2025-05-17/18:22:51 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#52行#私钥: 0x7496d6489d46ea85b2ace0f9b238a57c30714cb32ff5baf87689e9ae29a280ce
+2025-05-17/18:31:00 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#45行#[[account info: 0x14000400120]]
+2025-05-17/18:31:10 [INF] #/Users/chole/web3/DDPay/cmd/wallet/main.go#main.main#45行#[[account info: 0x57fF494d71A5AC744Bfa768d91811608B1EAd7BD]]

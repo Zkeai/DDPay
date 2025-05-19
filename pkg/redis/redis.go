@@ -50,3 +50,25 @@ func Del(keys ...string) error {
 func Exists(keys ...string) (int64, error) {
 	return client.Exists(Ctx, keys...).Result()
 }
+
+// ScanKeys 模糊匹配 key（用于查找所有订单）
+func ScanKeys(pattern string) ([]string, error) {
+	var (
+		cursor uint64
+		keys   []string
+		err    error
+	)
+
+	allKeys := make([]string, 0)
+	for {
+		keys, cursor, err = client.Scan(Ctx, cursor, pattern, 100).Result()
+		if err != nil {
+			return nil, err
+		}
+		allKeys = append(allKeys, keys...)
+		if cursor == 0 {
+			break
+		}
+	}
+	return allKeys, nil
+}

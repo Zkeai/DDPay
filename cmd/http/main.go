@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/Zkeai/DDPay/internal/server"
+	"github.com/Zkeai/DDPay/internal/wallet"
 	"github.com/Zkeai/DDPay/pkg/redis"
 	"os"
 	"os/signal"
@@ -53,6 +54,12 @@ func main() {
 
 	//redis 初始化
 	redis.InitRedis(c.Rdb)
+
+	//wallet 初始化
+	//初始化HD钱包
+	if err := wallet.InitGlobalDeriver(c.Evm.Mnemonic); err != nil {
+		logger.Error("初始化 HD 钱包失败", err)
+	}
 
 	//http 初始化
 	srv := server.NewHTTP(c)

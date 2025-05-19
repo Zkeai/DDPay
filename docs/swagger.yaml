@@ -17,6 +17,23 @@ definitions:
       msg:
         type: string
     type: object
+  model.OrderReq:
+    properties:
+      amount:
+        type: number
+      notify_url:
+        type: string
+      order_id:
+        type: string
+      pid:
+        type: integer
+      redirect_url:
+        type: string
+      signature:
+        type: string
+      trade_type:
+        type: string
+    type: object
 host: localhost:2900
 info:
   contact: {}
@@ -24,12 +41,41 @@ info:
   title: DDPay API
   version: 1.0.0
 paths:
-  /test/test:
+  /order/create-transaction:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户登录提交参数
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: 参数错误
+          schema:
+            type: string
+        "500":
+          description: 内部错误
+          schema:
+            type: string
+      summary: 创建订单
+      tags:
+      - order
+  /order/status:
     get:
       parameters:
-      - description: 测试消息
+      - description: 订单key
         in: query
-        name: msg
+        name: order
         required: true
         type: string
       responses:
@@ -42,10 +88,10 @@ paths:
           schema:
             $ref: '#/definitions/conf.ResponseError'
         "500":
-          description: 内部错误
+          description: Internal Server Error
           schema:
-            type: string
-      summary: 接口测试
+            $ref: '#/definitions/conf.ResponseError'
+      summary: 获取当前订单状态
       tags:
-      - test
+      - order
 swagger: "2.0"

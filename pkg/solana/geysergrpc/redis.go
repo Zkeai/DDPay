@@ -20,7 +20,7 @@ func NewRedisListener(rdb *redis.Client) *RedisListener {
 }
 
 // Start 启动监听 Redis 中的订阅配置变化
-func (r *RedisListener) Start() {
+func (r *RedisListener) grpcStart() {
 	pubsub := r.client.PSubscribe(ctx, "__keyspace@0__:user_grpc_*") // 使用 keyspace 监听
 	defer func(pubsub *redis.PubSub) {
 		err := pubsub.Close()
