@@ -3,8 +3,11 @@ package watcher
 import (
 	"context"
 	"encoding/json"
+	"github.com/Zkeai/DDPay/internal/watcher/evm"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Zkeai/DDPay/internal/conf"
 	"github.com/go-redis/redis/v8"
@@ -66,12 +69,33 @@ func (r *RedisListener) handleChainConfig(key string) {
 		return
 	}
 
-	var cfg conf.SubscribeConfig
-	if err := json.Unmarshal([]byte(val), &cfg); err != nil {
+	var info conf.SubscribeConfig
+	if err := json.Unmarshal([]byte(val), &info); err != nil {
 		log.Printf("[RedisWalletListener] 解析配置失败 (%s): %v\n", key, err)
 		return
 	}
 
 	//启动wallet监控
+	for _, cfg := range conf.EVMChains {
+		if cfg.Name == "bsc" {
+			bscWatcher := &evm.Watcher{
+				Chain:     cfg.Name,
+				RPC:       cfg.RPC,
+				Contract:  cfg.ContractAddr,
+				Redis:     r.client,
+				KeyPrefix: cfg.Name + "_" + strconv.FormatInt(info.MerchantID, 10),
+				Callback: func(e evm.TransferEvent) {
+					log.Printf("[CALLBACK][%s] Tx: %s, From: %s, To: %s, Amount: %s\n", e.Chain, e.TxHash, e.From, e.To, e.Amount)
+					// 你可以在这里触发数据库写入、Webhook 回调等逻辑
+					
+				},
+				PollDelay:      time.Second * 2,
+				ConfirmBlocks:  20,
+				TransferMethod: "0xa9059cbb", // transfer(address,uint256)
+			}
+			bscWatcher.StartEvm()
+		}
+
+	}
 
 }
