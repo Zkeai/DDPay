@@ -26,6 +26,9 @@ var (
 func main() {
 	initEnv()
 
+	// 设置Redis默认值
+	redis.SetDefaultValues()
+
 	// 启动 cron 服务
 	cronService := cron.NewCronService()
 	cronService.Start()
@@ -77,6 +80,5 @@ func initEnv() {
 	}
 	//redis 初始化
 	redis.InitRedis(c.Rdb)
-	redis.GetClient().Set(context.Background(), "usdt-cny", "7.5", 0)
-	redis.GetClient().Set(context.Background(), "usdt-trx", "0.27", 0)
+	// 默认值设置移到main函数中
 }

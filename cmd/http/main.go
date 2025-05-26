@@ -44,8 +44,8 @@ func main() {
 	utils.CreateDirIfNotExists(LogDir)
 
 	//读取yaml配置
-	flag.Parse()
 	filePath = flag.String("conf", "etc/config.yaml", "the config path")
+	flag.Parse()
 	c := new(conf.Conf)
 	err = cconf.Unmarshal(*filePath, c)
 	if err != nil {

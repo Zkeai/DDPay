@@ -40,7 +40,7 @@ func (w *Redis) GetOkxTrxUsdtRate() (float64, error) {
 	if result.Get("data").Exists() {
 		var data = result.Get("data").Array()
 		if len(data) > 0 {
-			w.Redis.Set(context.Background(), "usdt-cny", data[0].Get("1").Float(), 0)
+			w.Redis.Set(context.Background(), "usdt-trx", data[0].Get("1").Float(), 0)
 
 			return data[0].Get("1").Float(), nil
 		}

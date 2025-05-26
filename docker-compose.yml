@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+  # HTTP服务
+  http-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ddpay-http
+    container_name: ddpay-http
+    restart: always
+    ports:
+      - "${SERVER_PORT:-2900}:2900"
+    volumes:
+      - ./etc:/app/etc
+      - ./log:/app/log
+    command: ["/app/bin/http-server", "--conf", "/app/etc/config.yaml"]
+    depends_on:
+      - redis
+      - mysql
+    env_file:
+      - .env
+    networks:
+      - ddpay-network
+
+  # 定时任务服务
+  cron-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ddpay-cron
+    container_name: ddpay-cron
+    restart: always
+    volumes:
+      - ./etc:/app/etc
+      - ./log:/app/log
+    command: ["/app/bin/cron-server", "--conf", "/app/etc/config.yaml"]
+    depends_on:
+      - redis
+      - mysql
+    env_file:
+      - .env
+    networks:
+      - ddpay-network
+
+  # 钱包服务
+  wallet-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ddpay-wallet
+    container_name: ddpay-wallet
+    restart: always
+    volumes:
+      - ./etc:/app/etc
+      - ./log:/app/log
+    command: ["/app/bin/wallet-server", "--conf", "/app/etc/config.yaml"]
+    depends_on:
+      - redis
+      - mysql
+    env_file:
+      - .env
+    networks:
+      - ddpay-network
+
+  # Redis服务
+  redis:
+    image: redis:alpine
+    container_name: ddpay-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      --requirepass "${REDIS_PASSWORD:-}"
+    volumes:
+      - redis-data:/data
+    networks:
+      - ddpay-network
+
+  # MySQL服务
+  mysql:
+    image: mysql:8.0
+    container_name: ddpay-mysql
+    restart: always
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD:-your_password_here}"
+      MYSQL_DATABASE: "${DB_NAME:-ddpay}"
+      MYSQL_USER: "${DB_USER:-ddpay}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-your_password_here}"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - ddpay-network
+
+networks:
+  ddpay-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  mysql-data:
