@@ -28,11 +28,11 @@ var (
 
 )
 
-// @title		DDPay API
-// @version		1.0.0
+// @title	DDPay API
+// @version	1.0.0
 // @description	DDpay https://github.com/zkeai/DDPay
-// @host			localhost:2900
-// @BasePath		/api/v1
+// @host	localhost:2900
+// @BasePath	/api/v1
 func main() {
 	//logger 初始化
 	logger.InitLogger()
@@ -52,6 +52,8 @@ func main() {
 		logger.Error(err)
 	}
 
+	//全局化初始化
+	conf.Load(c)
 	//redis 初始化
 	redis.InitRedis(c.Rdb)
 

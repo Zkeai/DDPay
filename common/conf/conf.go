@@ -1,9 +1,8 @@
 package conf
 
 import (
-	"os"
-
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 type Response struct {
@@ -16,6 +15,10 @@ type ResponseError struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Err  string `json:"err"`
+}
+
+type Config struct {
+	SignKey string `yaml:"signKey"`
 }
 
 func Unmarshal(filePath string, out interface{}) error {

@@ -86,12 +86,14 @@ func (r *RedisListener) handleChainConfig(key string) {
 				KeyPrefix: cfg.Name + "_" + strconv.FormatInt(info.MerchantID, 10),
 				Callback: func(e evm.TransferEvent) {
 					log.Printf("[CALLBACK][%s] Tx: %s, From: %s, To: %s, Amount: %s\n", e.Chain, e.TxHash, e.From, e.To, e.Amount)
-					// 你可以在这里触发数据库写入、Webhook 回调等逻辑
-					
+					// 数据库存订单
+
+					// 推送订单到tg
+
 				},
 				PollDelay:      time.Second * 2,
 				ConfirmBlocks:  20,
-				TransferMethod: "0xa9059cbb", // transfer(address,uint256)
+				TransferMethod: "0xa9059cbb",
 			}
 			bscWatcher.StartEvm()
 		}

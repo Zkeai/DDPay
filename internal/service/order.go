@@ -7,6 +7,7 @@ import (
 	"github.com/Zkeai/DDPay/internal/model"
 	"github.com/Zkeai/DDPay/internal/wallet"
 	"github.com/Zkeai/DDPay/pkg/redis"
+	"github.com/v03413/bepusdt/app/rate"
 	"sort"
 	"time"
 )
@@ -64,6 +65,9 @@ func (s *Service) CreateOrder(ctx context.Context, req model.OrderReq) (model.Or
 
 	// 计算最小可用 offset
 	offset := getNextAmountOffset(usedOffsets)
+
+	//CNY 转 usdt
+	rate.GetOkxUsdtRawRate()
 
 	// 保存到 Redis
 	cfg := model.RedisWallet{

@@ -28,9 +28,15 @@ func InitRouter(s *chttp.Server, service *service.Service) {
 
 	//order
 	wg := g.Group("/order")
+	wg.Use(signVerify)
 	{
 		wg.POST("/create-transaction", createTransaction)
-		wg.GET("/status", getOrderStatus)
+
+	}
+
+	pg := g.Group("/pay")
+	{
+		pg.GET("/status", getOrderStatus)
 	}
 
 }

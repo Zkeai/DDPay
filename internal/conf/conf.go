@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"github.com/Zkeai/DDPay/common/conf"
 	"github.com/Zkeai/DDPay/common/database"
 	chttp "github.com/Zkeai/DDPay/common/net/cttp"
 	"github.com/Zkeai/DDPay/internal/wallet"
@@ -16,6 +17,7 @@ type Conf struct {
 	Tg     *tgbotapi.BotAPI       `yaml:"tg"`
 	Grpc   *geysergrpc.GrpcConfig `yaml:"grpc"`
 	Evm    *wallet.Config         `yaml:"evm"`
+	Config *conf.Config           `yaml:"config"`
 }
 
 type ChainConfig struct {
@@ -55,4 +57,14 @@ type SubscribeConfig struct {
 	Wallet     string
 	Status     string
 	ExpireTime int
+}
+
+var globalConf *Conf
+
+func Load(c *Conf) {
+	globalConf = c
+}
+
+func Get() *Conf {
+	return globalConf
 }

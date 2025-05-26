@@ -1,18 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
+	cconf "github.com/Zkeai/DDPay/common/conf"
+	"github.com/Zkeai/DDPay/common/cron"
+	"github.com/Zkeai/DDPay/common/logger"
 	"github.com/Zkeai/DDPay/common/utils"
+	"github.com/Zkeai/DDPay/internal/conf"
+	"github.com/Zkeai/DDPay/internal/watcher/okx"
+	"github.com/Zkeai/DDPay/pkg/redis"
 	"github.com/ouqiang/goutil"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
-
-	cconf "github.com/Zkeai/DDPay/common/conf"
-	"github.com/Zkeai/DDPay/common/cron"
-	"github.com/Zkeai/DDPay/common/logger"
-	"github.com/Zkeai/DDPay/internal/conf"
 )
 
 var (
@@ -27,6 +29,15 @@ func main() {
 	// 启动 cron 服务
 	cronService := cron.NewCronService()
 	cronService.Start()
+
+	// 启动初始化定时任务 获取汇率
+	cronService.AddTask("*/30 * * * * *", func(ctx context.Context) {
+		client := &okx.Redis{Redis: redis.GetClient()}
+		client.GetOkxUsdtCnySellPrice()
+		client.GetOkxTrxUsdtRate()
+
+	})
+
 	defer cronService.Stop()
 
 	// 优雅退出处理
@@ -64,5 +75,8 @@ func initEnv() {
 	if err != nil {
 		logger.Fatal("Failed to load config:", err)
 	}
-
+	//redis 初始化
+	redis.InitRedis(c.Rdb)
+	redis.GetClient().Set(context.Background(), "usdt-cny", "7.5", 0)
+	redis.GetClient().Set(context.Background(), "usdt-trx", "0.27", 0)
 }

@@ -1,11 +1,16 @@
 package utils
 
 import (
+	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 	"math/big"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -123,4 +128,35 @@ func GenerateFormattedBinanceText(assets []struct {
 		sb.WriteString(fmt.Sprintf("<font color=\"blue\">%s｜可用：%s｜锁定：%s</font><br>", asset.Asset, free, locked))
 	}
 	return sb.String()
+}
+
+// DDPaySign 用于对参数进行 MD5 签名
+func DDPaySign(params map[string]string, signKey string) string {
+	// 获取所有的 key 并排序
+	var keys []string
+	for k := range params {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var signParts []string
+
+	for _, k := range keys {
+		val := params[k]
+		if val == "" || k == "signature" {
+			continue
+		}
+		signParts = append(signParts, k+"="+val)
+	}
+
+	// 拼接字符串后加上 signKey
+	signStr := strings.Join(signParts, "&") + signKey
+
+	// 计算 MD5 签名
+	hash := md5.Sum([]byte(signStr))
+	return hex.EncodeToString(hash[:])
+}
+
+func RestoreBody(data []byte) io.ReadCloser {
+	return io.NopCloser(bytes.NewBuffer(data))
 }
