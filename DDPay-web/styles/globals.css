@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义样式 */
+@layer utilities {
+  /* 禁用所有过渡效果的类 */
+  .disable-transitions * {
+    transition: none !important;
+  }
+}

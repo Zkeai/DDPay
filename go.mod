@@ -16,7 +16,7 @@ require (
 	github.com/ouqiang/goutil v1.4.6
 	github.com/panjf2000/ants/v2 v2.11.3
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/shopspring/decimal v1.4.0
+	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/smallnest/chanx v1.2.0
 	github.com/spf13/cast v1.8.0
 	github.com/swaggo/files v1.0.1

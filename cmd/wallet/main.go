@@ -17,7 +17,6 @@ import (
 
 var (
 	filePath *string
-	AppDir   string
 	LogDir   string
 )
 

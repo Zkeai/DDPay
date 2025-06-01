@@ -8,7 +8,7 @@ import (
 	config "github.com/Zkeai/DDPay/internal/conf"
 	"github.com/Zkeai/DDPay/internal/model"
 	"github.com/gin-gonic/gin"
-
+	"math"
 	"net/http"
 )
 
@@ -100,4 +100,9 @@ func signVerify(c *gin.Context) {
 
 	c.Set("data", m)
 	c.Request.Body = utils.RestoreBody(rawData)
+}
+
+func RoundFloat(x float64, prec int) float64 {
+	pow := math.Pow(10, float64(prec))
+	return math.Round(x*pow) / pow
 }
