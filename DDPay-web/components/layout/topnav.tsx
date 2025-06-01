@@ -30,7 +30,6 @@ interface TopNavProps {
 export default function TopNav({
   collapsed,
   onToggleCollapse,
-  currentRoute,
   userName = "管理员",
   avatarUrl,
   onLogout = () => {},
