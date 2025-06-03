@@ -1,0 +1,23 @@
+server:
+  network: "tcp"
+  address: ":2900"
+  readTimeout: 10s
+  writeTimeout: 10s
+db:
+  dsn: "ddpay:muyuai0208..@tcp(101.35.215.15:3306)/ddpay?parseTime=true"
+  active: 10
+  idle: 10
+  idleTimeout: 60s
+redis:
+  addr: "redis:6379"
+  password: ""
+  db: 0
+telegram:
+  botToken: "7749709306:AAHKo_YlLmi-nwps0tBqpcftw92H3tuWjYc"
+evm:
+  mnemonic: "select width deliver spin police tube disorder order climb coconut fatal plate"
+  rpc: ""
+solana:
+  grpc: "https://solana-yellowstone-grpc.publicnode.com:443"
+config:
+  signKey: "ddPay"
