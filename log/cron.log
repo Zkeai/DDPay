@@ -53,3 +53,24 @@
 2025-06-01/13:45:32 [INF] #/app/cmd/cron/main.go#main.main#54行#[[Shutting down CronService...]]
 2025-06-01/13:45:32 [INF] #/app/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Stop.func1#40行#[[CronService stopping...]]
 2025-06-01/13:45:32 [INF] #/app/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).Stop#158行#[[Cron stopped]]
+2025-06-03/10:07:19 [INF] #/app/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Start#31行#[[CronService starting...]]
+2025-06-03/10:07:19 [INF] #/app/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).AddTask#63行#[[Task add success: 1]]
+2025-06-03/11:06:45 [INF] #/app/cmd/cron/main.go#main.main#54行#[[Shutting down CronService...]]
+2025-06-03/11:06:45 [INF] #/app/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Stop.func1#40行#[[CronService stopping...]]
+2025-06-03/11:06:45 [INF] #/app/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).Stop#158行#[[Cron stopped]]
+2025-06-03/11:09:51 [INF] #/Users/chole/web3/DDPay/common/cron/service.go#github.com/Zkeai/DDPay/common/cron.(*CronService).Start#31行#[[CronService starting...]]
+2025-06-03/11:09:51 [INF] #/Users/chole/web3/DDPay/common/cron/manager.go#github.com/Zkeai/DDPay/common/cron.(*TaskManager).AddTask#63行#[[Task add success: 1]]
+2025-06-03/11:24:45 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]
+2025-06-03/11:31:19 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]
+2025-06-03/11:50:18 [ERR] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#55行#[[yaml: unmarshal errors:
+  line 35: cannot unmarshal !!int `2592000` into time.Duration]]
+2025-06-03/11:50:18 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]
+2025-06-03/12:06:38 [ERR] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#55行#[[yaml: unmarshal errors:
+  line 35: cannot unmarshal !!int `2592000` into time.Duration]]
+2025-06-03/12:06:38 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]
+2025-06-03/12:28:46 [ERR] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#55行#[[yaml: unmarshal errors:
+  line 35: cannot unmarshal !!int `2592000` into time.Duration]]
+2025-06-03/12:28:46 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]
+2025-06-03/17:32:36 [ERR] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#55行#[[yaml: unmarshal errors:
+  line 45: cannot unmarshal !!int `2592000` into time.Duration]]
+2025-06-03/17:32:36 [INF] #/Users/chole/web3/DDPay/cmd/http/main.go#main.main#71行#[[初始化邮件服务成功]]

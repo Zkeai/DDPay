@@ -5,10 +5,34 @@ import (
 	"github.com/Zkeai/DDPay/common/database"
 	chttp "github.com/Zkeai/DDPay/common/net/cttp"
 	"github.com/Zkeai/DDPay/internal/wallet"
+	"github.com/Zkeai/DDPay/pkg/email"
+	"github.com/Zkeai/DDPay/pkg/jwt"
 	"github.com/Zkeai/DDPay/pkg/redis"
 	"github.com/Zkeai/DDPay/pkg/solana/geysergrpc"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
+
+// OAuthConfig GitHub和Google OAuth配置结构体
+type OAuthConfig struct {
+	Github GithubConfig `yaml:"github"`
+	Google GoogleConfig `yaml:"google"`
+}
+
+// GithubConfig GitHub OAuth配置
+type GithubConfig struct {
+	ClientID     string `yaml:"clientID"`
+	ClientSecret string `yaml:"clientSecret"`
+	RedirectURI  string `yaml:"redirectURI"`
+	Scopes       string `yaml:"scopes"`
+}
+
+// GoogleConfig Google OAuth配置
+type GoogleConfig struct {
+	ClientID     string `yaml:"clientID"`
+	ClientSecret string `yaml:"clientSecret"`
+	RedirectURI  string `yaml:"redirectURI"`
+	Scopes       string `yaml:"scopes"`
+}
 
 type Conf struct {
 	DB     *database.Config       `yaml:"db"`
@@ -18,6 +42,9 @@ type Conf struct {
 	Grpc   *geysergrpc.GrpcConfig `yaml:"grpc"`
 	Evm    *wallet.Config         `yaml:"evm"`
 	Config *conf.Config           `yaml:"config"`
+	JWT    *jwt.Config            `yaml:"jwt"`
+	Email  *email.Config          `yaml:"email"`
+	OAuth  *OAuthConfig           `yaml:"oauth"` // 添加OAuth配置
 }
 
 type ChainConfig struct {

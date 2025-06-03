@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ShoppingBagIcon,
   ShoppingCartIcon,
@@ -32,6 +32,8 @@ import { Image } from "@heroui/image";
 import { SidebarItem } from "@/types";
 import Sidebar from "@/components/layout/sidebar";
 import TopNav from "@/components/layout/topnav";
+import { logout, validateToken } from "@/lib/afetch";
+import { useAuthStore } from "@/store/auth";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -43,9 +45,35 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
   const [currentRoute, setCurrentRoute] = useState("首页");
   const [isMobile, setIsMobile] = useState(false);
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const { user } = useAuthStore();
+  const [isValidToken, setIsValidToken] = useState(true);
+
+  // 验证JWT令牌有效性
+  useEffect(() => {
+    const checkTokenValidity = () => {
+      const isValid = validateToken();
+      setIsValidToken(isValid);
+
+      // 如果令牌无效且当前不在登录页面，则重定向到登录页
+      if (!isValid && !pathname.includes("/admin/login")) {
+        router.push("/admin");
+      }
+    };
+
+    // 初次加载检查
+    checkTokenValidity();
+
+    // 设置定时器，定期检查令牌有效性
+    const tokenCheckInterval = setInterval(checkTokenValidity, 60000); // 每分钟检查一次
+
+    return () => {
+      clearInterval(tokenCheckInterval);
+    };
+  }, [pathname, router]);
 
   // 所有菜单项
   const sidebarItems: SidebarItem[] = [
@@ -307,8 +335,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     }
   }, [pathname, isMobile]);
 
-  const handleLogout = () => {
-    // 这里可以添加登出逻辑
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/admin");
+    } catch (error) {
+      console.error("注销失败:", error);
+      // 即使失败也强制清除本地令牌并跳转
+      localStorage.removeItem("auth-storage");
+      router.push("/admin");
+    }
   };
 
   const handleToggleCollapse = (isCollapsed: boolean) => {
@@ -333,6 +369,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + "/");
   };
+
+  // 如果令牌无效，不渲染主布局
+  if (!isValidToken) {
+    return <div>{children}</div>;
+  }
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
@@ -369,7 +410,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <Image
                 alt="用户头像"
                 className="w-full h-full object-cover"
-                src="http://42.51.0.159:4399/favicon.ico"
+                src={user?.avatar || "http://42.51.0.159:4399/favicon.ico"}
               />
             </div>
           </button>
@@ -380,7 +421,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <div className="py-1">
                 <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    管理员
+                    {user?.username || "管理员"}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {currentRoute}
@@ -454,15 +495,17 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     <Image
                       alt="用户头像"
                       className="w-full h-full object-cover"
-                      src="http://42.51.0.159:4399/favicon.ico"
+                      src={
+                        user?.avatar || "http://42.51.0.159:4399/favicon.ico"
+                      }
                     />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      管理员
+                      {user?.username || "管理员"}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      管理员账户
+                      {user?.role || "管理员账户"}
                     </p>
                   </div>
                 </div>
@@ -571,11 +614,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* 桌面端侧边栏 */}
       <div className={`hidden md:block ${collapsed ? "md:w-0" : "md:w-64"}`}>
         <Sidebar
-          avatarUrl="http://42.51.0.159:4399/favicon.ico"
+          avatarUrl={user?.avatar || "http://42.51.0.159:4399/favicon.ico"}
           categories={categories}
           collapsed={collapsed}
           items={sidebarItems}
-          userName="管理员"
+          userName={user?.username || "管理员"}
           onLogout={handleLogout}
           openMenus={openMenus}
           onToggleMenu={toggleMenu}
@@ -592,8 +635,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             collapsed={collapsed}
             currentRoute={currentRoute}
             onToggleCollapse={handleToggleCollapse}
-            userName="管理员"
-            avatarUrl="http://42.51.0.159:4399/favicon.ico"
+            userName={user?.username || "管理员"}
+            avatarUrl={user?.avatar || "http://42.51.0.159:4399/favicon.ico"}
             onLogout={handleLogout}
           />
         </div>

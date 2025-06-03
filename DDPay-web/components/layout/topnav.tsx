@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Image } from "@heroui/image";
 
 import { useTitle } from "@/components/TitleContext";
+import { logout } from "@/lib/afetch";
 
 interface TopNavProps {
   collapsed: boolean;
@@ -32,7 +33,15 @@ export default function TopNav({
   onToggleCollapse,
   userName = "管理员",
   avatarUrl,
-  onLogout = () => {},
+  onLogout = async () => {
+    await logout();
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.reload();
+  },
 }: TopNavProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);

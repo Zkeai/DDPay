@@ -21,3 +21,38 @@ solana:
   grpc: "https://solana-yellowstone-grpc.publicnode.com:443"
 config:
   signKey: "ddPay"
+  # 前端API配置
+  frontend:
+    # API基础URL
+    baseUrl: "https://api.ddpay.com"
+    # API路径前缀
+    apiPrefix: "/api/v1"
+    # CORS配置
+    cors:
+      allowOrigins: ["https://ddpay.com", "http://localhost:3000"]
+email:
+  host: "smtp.gmail.com"
+  port: 587
+  username: "your-email@gmail.com"
+  password: "your-app-password"
+  from: "your-email@gmail.com"
+  fromName: "DDPay System"
+# OAuth认证配置
+oauth:
+  # GitHub OAuth应用配置
+  github:
+    clientID: "your-github-client-id"
+    clientSecret: "your-github-client-secret"
+    redirectURI: "https://yoursite.com/api/v1/auth/github/callback"
+    scopes: "user:email,read:user"
+  # Google OAuth应用配置 
+  google:
+    clientID: "your-google-client-id.apps.googleusercontent.com"
+    clientSecret: "your-google-client-secret"
+    redirectURI: "https://yoursite.com/api/v1/auth/google/callback"
+    scopes: "email,profile"
+jwt:
+  secret: "your-secret-key-please-change-in-production"
+  issuer: "DDPay"
+  expire: 7200
+  refreshTokenTime: 2592000

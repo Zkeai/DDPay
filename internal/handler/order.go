@@ -1,15 +1,13 @@
 package handler
 
 import (
-	"encoding/json"
-	"github.com/Zkeai/DDPay/common/conf"
-	"github.com/Zkeai/DDPay/common/logger"
-	"github.com/Zkeai/DDPay/common/utils"
-	config "github.com/Zkeai/DDPay/internal/conf"
-	"github.com/Zkeai/DDPay/internal/model"
-	"github.com/gin-gonic/gin"
 	"math"
 	"net/http"
+
+	"github.com/Zkeai/DDPay/common/conf"
+	"github.com/Zkeai/DDPay/common/logger"
+	"github.com/Zkeai/DDPay/internal/model"
+	"github.com/gin-gonic/gin"
 )
 
 // createTransaction 创建订单
@@ -69,38 +67,7 @@ func getOrderStatus(c *gin.Context) {
 
 }
 
-func signVerify(c *gin.Context) {
-	rawData, err := c.GetRawData()
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, conf.Response{Code: 400, Msg: "读取请求失败", Data: err.Error()})
-		c.Abort()
-		return
-	}
-
-	var m = make(map[string]any)
-	if err = json.Unmarshal(rawData, &m); err != nil {
-		c.JSON(http.StatusBadRequest, conf.Response{Code: 400, Msg: "JSON解析失败", Data: err.Error()})
-		c.Abort()
-		return
-	}
-
-	sign, ok := m["signature"]
-	if !ok {
-		c.JSON(http.StatusBadRequest, conf.Response{Code: 400, Msg: "签名缺失"})
-		c.Abort()
-		return
-	}
-	token := config.Get().Config.SignKey
-	if utils.Sign(m, token) != sign {
-		c.JSON(http.StatusUnauthorized, conf.Response{Code: 401, Msg: "签名验证失败"})
-		c.Abort()
-		return
-	}
-
-	c.Set("data", m)
-	c.Request.Body = utils.RestoreBody(rawData)
-}
 
 func RoundFloat(x float64, prec int) float64 {
 	pow := math.Pow(10, float64(prec))

@@ -9,6 +9,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.9.2
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/gorilla/websocket v1.5.3
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.3
@@ -25,11 +26,14 @@ require (
 	github.com/tidwall/gjson v1.18.0
 	github.com/tyler-smith/go-bip39 v1.1.0
 	github.com/v03413/bepusdt v1.18.6
+	golang.org/x/crypto v0.38.0
 	google.golang.org/grpc v1.72.1
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/macaron.v1 v1.5.0
 	gopkg.in/yaml.v3 v3.0.1
 )
+
+require gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -81,13 +85,13 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/unknwon/com v1.0.1 // indirect
 	golang.org/x/arch v0.17.0 // indirect
-	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/tools v0.33.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )

@@ -3,19 +3,22 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/Zkeai/DDPay/internal/server"
-	"github.com/Zkeai/DDPay/internal/wallet"
-	"github.com/Zkeai/DDPay/pkg/redis"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/Zkeai/DDPay/internal/server"
+	"github.com/Zkeai/DDPay/internal/wallet"
+	"github.com/Zkeai/DDPay/pkg/email"
+	"github.com/Zkeai/DDPay/pkg/redis"
+
+	"path/filepath"
 
 	cconf "github.com/Zkeai/DDPay/common/conf"
 	"github.com/Zkeai/DDPay/common/logger"
 	"github.com/Zkeai/DDPay/common/utils"
 	"github.com/Zkeai/DDPay/internal/conf"
 	"github.com/ouqiang/goutil"
-	"path/filepath"
 )
 
 var (
@@ -62,9 +65,13 @@ func main() {
 	if err := wallet.InitGlobalDeriver(c.Evm.Mnemonic); err != nil {
 		logger.Error("初始化 HD 钱包失败", err)
 	}
+	
+	//邮件服务初始化
+	emailService := email.NewService(*c.Email)
+	logger.Info("初始化邮件服务成功")
 
 	//http 初始化
-	srv := server.NewHTTP(c)
+	srv := server.NewHTTP(c, emailService)
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {

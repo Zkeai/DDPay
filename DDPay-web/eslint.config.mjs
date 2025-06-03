@@ -93,7 +93,7 @@ export default defineConfig([
 
     rules: {
       "prettier/prettier": "off",
-      "no-console": "warn",
+      "no-console": "off",
       "react/prop-types": "off",
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
@@ -105,14 +105,7 @@ export default defineConfig([
       "unused-imports/no-unused-imports": "warn",
       "comma-dangle": "off",
 
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          args: "after-used",
-          ignoreRestSiblings: false,
-          argsIgnorePattern: "^_.*?$",
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": "off",
 
       "import/order": [
         "warn",

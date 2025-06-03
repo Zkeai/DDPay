@@ -9,7 +9,7 @@ db:
   idle: 10
   idleTimeout: 60s
 redis:
-  addr: "redis:6379"
+  addr: "localhost:6379"
   password: ""
   db: 0
 telegram:
@@ -20,4 +20,40 @@ evm:
 solana:
   grpc: "https://solana-yellowstone-grpc.publicnode.com:443"
 config:
-  signKey: "ddPay"
+  signKey:
+    "ddPay"
+    # 前端API配置
+  frontend:
+    # API基础URL
+    baseUrl: "http://localhost:2900"
+    # API路径前缀
+    apiPrefix: "/api/v1"
+    # CORS配置
+    cors:
+      allowOrigins: ["https://ddpay.com", "http://localhost:2900"]
+email:
+  host: "smtp.qq.com"
+  port: 465
+  username: "yobob_1@qq.com"
+  password: "yvoabrfjzuwmbghe"
+  from: "yobob_1@qq.com"
+  fromName: "DDPay"
+jwt:
+  secret: "ddpay-muyu-0208"
+  issuer: "DDPay"
+  expire: 7200
+  refreshTokenTime: 2592000
+# OAuth认证配置
+oauth:
+  # GitHub OAuth应用配置
+  github:
+    clientID: "Ov23lixncw5gEYEZfzBV"
+    clientSecret: "ad7868659f7e99fa358d46bb7385067336351495"
+    redirectURI: "http://localhost:2900/api/v1/auth/github/callback"
+    scopes: "user:email,read:user"
+  # Google OAuth应用配置
+  google:
+    clientID: "501929894320-d9knqp55avc6c099u2u15v8njefba2g0.apps.googleusercontent.com"
+    clientSecret: "AIzaSyDyucj69IPs8sSjj-0M2u_XlItlv89VpD4"
+    redirectURI: "http://localhost:2900/api/v1/auth/github/callback"
+    scopes: "email,profile"

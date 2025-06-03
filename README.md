@@ -89,3 +89,53 @@ docker-compose down
 2. 生产环境部署时，请确保网络安全设置
 3. 定期备份数据
 4. 数据库初始化 SQL 脚本请放在`sql/`目录下，将在首次启动 MySQL 容器时自动执行
+
+## JWT 鉴权和用户模块
+
+本项目实现了基于 JWT 的鉴权功能和完整的用户模块，包括：
+
+### JWT 鉴权功能
+
+- 基于 JWT 的身份验证
+- 使用 Redis 存储令牌，支持令牌撤销
+- 令牌过期自动处理
+- 支持令牌刷新
+
+### 用户模块
+
+- 邮箱验证码注册
+- 邮箱密码登录
+- OAuth 第三方登录（支持 Auth.js）
+- 密码重置
+- 用户信息管理
+- 登录日志记录
+
+### 数据库表结构
+
+- users：用户表
+- verification_codes：验证码表
+- oauth_accounts：OAuth 账号关联表
+- login_logs：登录日志表
+
+### 配置说明
+
+在`etc/config.yaml`中添加以下配置：
+
+```yaml
+jwt:
+  secret: "your-secret-key-change-this-in-production"
+  issuer: "DDPay"
+  expirationTime: 24h
+  refreshTokenTime: 168h
+```
+
+### API 接口
+
+- POST /api/v1/user/register - 用户注册
+- POST /api/v1/user/login - 用户登录
+- POST /api/v1/user/oauth/login - OAuth 登录
+- POST /api/v1/user/send-code - 发送验证码
+- POST /api/v1/user/reset-password - 重置密码
+- GET /api/v1/user/profile - 获取用户信息（需要认证）
+- PUT /api/v1/user/profile - 更新用户信息（需要认证）
+- POST /api/v1/user/logout - 注销登录（需要认证）
