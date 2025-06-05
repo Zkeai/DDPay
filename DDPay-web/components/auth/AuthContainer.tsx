@@ -30,11 +30,14 @@ export const AuthContainer = ({
   }, []);
 
   const handleAuthSuccess = () => {
-    if (onSuccess) {
-      onSuccess();
-    } else if (redirectTo) {
-      router.push(redirectTo);
-    }
+    // 添加延迟以确保状态更新完成
+    setTimeout(() => {
+      if (onSuccess) {
+        onSuccess();
+      } else if (redirectTo) {
+        router.push(redirectTo);
+      }
+    }, 100);
   };
 
   const handleSwitchMode = (

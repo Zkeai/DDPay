@@ -8,14 +8,20 @@ definitions:
       msg:
         type: string
     type: object
-  conf.ResponseError:
+  model.CreateSubsiteReq:
     properties:
-      code:
-        type: integer
-      err:
+      commission_rate:
+        maximum: 100
+        minimum: 0
+        type: number
+      name:
         type: string
-      msg:
+      subdomain:
         type: string
+    required:
+    - commission_rate
+    - name
+    - subdomain
     type: object
   model.OrderReq:
     properties:
@@ -34,6 +40,108 @@ definitions:
       trade_type:
         type: string
     type: object
+  model.UpdateSubsiteReq:
+    properties:
+      commission_rate:
+        maximum: 100
+        minimum: 0
+        type: number
+      description:
+        type: string
+      domain:
+        type: string
+      id:
+        type: integer
+      logo:
+        type: string
+      name:
+        type: string
+      status:
+        enum:
+        - 0
+        - 1
+        type: integer
+      subdomain:
+        type: string
+      theme:
+        type: string
+    required:
+    - commission_rate
+    - id
+    - name
+    - subdomain
+    type: object
+  service.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  service.OAuthLoginRequest:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      provider:
+        type: string
+      provider_token:
+        type: string
+      provider_user_id:
+        type: string
+      username:
+        type: string
+    required:
+    - provider
+    - provider_token
+    - provider_user_id
+    type: object
+  service.RegisterRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - code
+    - email
+    - password
+    - username
+    type: object
+  service.ResetPasswordRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+      new_password:
+        minLength: 8
+        type: string
+    required:
+    - code
+    - email
+    - new_password
+    type: object
+  service.SendCodeRequest:
+    properties:
+      email:
+        type: string
+      type:
+        description: register, reset_password
+        type: string
+    required:
+    - email
+    - type
+    type: object
 host: localhost:2900
 info:
   contact: {}
@@ -41,14 +149,415 @@ info:
   title: DDPay API
   version: 1.0.0
 paths:
+  /api/v1/subsite/config:
+    get:
+      consumes:
+      - application/json
+      description: 获取分站JSON格式配置
+      parameters:
+      - description: 分站ID
+        in: query
+        name: subsite_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 获取分站JSON配置
+      tags:
+      - subsite
+    post:
+      consumes:
+      - application/json
+      description: 保存分站JSON格式配置信息
+      parameters:
+      - description: 保存分站JSON配置请求
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 保存分站JSON配置
+      tags:
+      - subsite
+  /api/v1/subsite/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的分站
+      parameters:
+      - description: 创建分站请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateSubsiteReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 创建分站
+      tags:
+      - subsite
+  /api/v1/subsite/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定的分站
+      parameters:
+      - description: 分站ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 删除分站
+      tags:
+      - subsite
+  /api/v1/subsite/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取分站详细信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 获取分站信息
+      tags:
+      - subsite
+  /api/v1/subsite/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有分站列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 获取分站列表
+      tags:
+      - subsite
+  /api/v1/subsite/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新分站信息
+      parameters:
+      - description: 更新分站请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateSubsiteReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 更新分站
+      tags:
+      - subsite
+  /api/v1/user/check-email:
+    get:
+      consumes:
+      - application/json
+      description: 检查提供的邮箱是否已经注册
+      parameters:
+      - description: 邮箱地址
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 检查邮箱是否已存在
+      tags:
+      - 用户管理
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 通过邮箱密码登录
+      parameters:
+      - description: 登录信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 用户登录
+      tags:
+      - 用户
+  /api/v1/user/login-logs:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户登录日志，支持分页和筛选
+      parameters:
+      - description: 用户ID
+        in: query
+        name: user_id
+        type: integer
+      - description: IP地址
+        in: query
+        name: ip
+        type: string
+      - description: 状态(0:失败,1:成功)
+        in: query
+        name: status
+        type: integer
+      - description: 开始时间(格式:2006-01-02T15:04:05Z)
+        in: query
+        name: start_time
+        type: string
+      - description: 结束时间(格式:2006-01-02T15:04:05Z)
+        in: query
+        name: end_time
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页大小
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 获取登录日志
+      tags:
+      - 用户管理
+  /api/v1/user/logout:
+    post:
+      consumes:
+      - application/json
+      description: 注销当前用户的登录状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 注销登录
+      tags:
+      - 用户
+  /api/v1/user/oauth/login:
+    post:
+      consumes:
+      - application/json
+      description: 通过OAuth提供商登录
+      parameters:
+      - description: OAuth登录信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.OAuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: OAuth登录
+      tags:
+      - 用户
+  /api/v1/user/profile:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前登录用户的信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户信息
+      tags:
+      - 用户
+    put:
+      consumes:
+      - application/json
+      description: 更新当前登录用户的信息
+      parameters:
+      - description: 用户名
+        in: formData
+        name: username
+        type: string
+      - description: 头像
+        in: formData
+        name: avatar
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户信息
+      tags:
+      - 用户
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      description: 通过邮箱验证码注册用户
+      parameters:
+      - description: 注册信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 用户注册
+      tags:
+      - 用户
+  /api/v1/user/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: 通过验证码重置密码
+      parameters:
+      - description: 重置密码请求
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 重置密码
+      tags:
+      - 用户
+  /api/v1/user/send-code:
+    post:
+      consumes:
+      - application/json
+      description: 发送邮箱验证码
+      parameters:
+      - description: 发送验证码请求
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/service.SendCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/conf.Response'
+      summary: 发送验证码
+      tags:
+      - 用户
   /order/create-transaction:
     post:
       consumes:
       - application/json
       parameters:
-      - description: 用户登录提交参数
+      - description: 创建订单
         in: body
-        name: req
+        name: request
         required: true
         schema:
           $ref: '#/definitions/model.OrderReq'
@@ -60,24 +569,28 @@ paths:
           schema:
             $ref: '#/definitions/conf.Response'
         "400":
-          description: 参数错误
+          description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/conf.Response'
         "500":
-          description: 内部错误
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/conf.Response'
       summary: 创建订单
       tags:
       - order
-  /order/status:
+  /pay/status:
     get:
+      consumes:
+      - application/json
       parameters:
       - description: 订单key
         in: query
         name: order
         required: true
         type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
@@ -86,11 +599,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/conf.ResponseError'
+            $ref: '#/definitions/conf.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/conf.ResponseError'
+            $ref: '#/definitions/conf.Response'
       summary: 获取当前订单状态
       tags:
       - order

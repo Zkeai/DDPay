@@ -11,6 +11,7 @@ type User struct {
 	Avatar        string    `json:"avatar" db:"avatar"`
 	Role          string    `json:"role" db:"role"`
 	Status        int       `json:"status" db:"status"`
+	Level         int       `json:"level" db:"level"` // 用户等级：1=初级，2=中级，3=高级
 	EmailVerified int       `json:"email_verified" db:"email_verified"`
 	CreatedAt     time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at" db:"updated_at"`
@@ -76,6 +77,7 @@ type UserProfile struct {
 	Username      string    `json:"username"`
 	Avatar        string    `json:"avatar"`
 	Role          string    `json:"role"`
+	Level         int       `json:"level"`
 	EmailVerified bool      `json:"email_verified"`
 	CreatedAt     time.Time `json:"created_at"`
 	LastLoginAt   time.Time `json:"last_login_at"`
@@ -89,6 +91,7 @@ func (u *User) ToProfile() *UserProfile {
 		Username:      u.Username,
 		Avatar:        u.Avatar,
 		Role:          u.Role,
+		Level:         u.Level,
 		EmailVerified: u.EmailVerified == 1,
 		CreatedAt:     u.CreatedAt,
 		LastLoginAt:   u.LastLoginAt,

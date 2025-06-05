@@ -13,13 +13,13 @@ import (
 // createTransaction 创建订单
 // @Tags order
 // @Summary 创建订单
-// @Param a req body model.OrderReq true "创建订单"
+// @Accept json
+// @Produce json
+// @Param request body model.OrderReq true "创建订单"
 // @Router /order/create-transaction [post]
 // @Success 200 {object} conf.Response
-// @Failure 400 {object} string "参数错误"
-// @Failure 500 {object} string "内部错误"
-// @Produce JSON
-// @Accept JSON
+// @Failure 400 {object} conf.Response
+// @Failure 500 {object} conf.Response
 func createTransaction(c *gin.Context) {
 	var req model.OrderReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -38,11 +38,13 @@ func createTransaction(c *gin.Context) {
 // getOrderStatus 获取当前订单状态
 // @Tags order
 // @Summary 获取当前订单状态
+// @Accept json
+// @Produce json
 // @Param order query string true "订单key"
 // @Router /pay/status [get]
 // @Success 200 {object} conf.Response
-// @Failure 400 {object} conf.ResponseError
-// @Failure 500 {object} conf.ResponseError
+// @Failure 400 {object} conf.Response
+// @Failure 500 {object} conf.Response
 func getOrderStatus(c *gin.Context) {
 
 	orderKey := c.Query("order")

@@ -8,9 +8,10 @@ import (
 	"math/big"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/Zkeai/DDPay/internal/model"
 	"github.com/Zkeai/DDPay/pkg/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // 获取当前北京时间
@@ -442,4 +443,97 @@ func (s *Service) CheckEmailExists(ctx context.Context, email string) (bool, err
 	
 	// 如果找到用户，表示邮箱已存在
 	return user != nil, nil
+}
+
+// LoginLogRequest 登录日志查询请求
+type LoginLogRequest struct {
+	UserID    int64     `json:"user_id"`
+	IP        string    `json:"ip"`
+	Status    *int      `json:"status"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	Page      int       `json:"page" binding:"required,min=1"`
+	PageSize  int       `json:"page_size" binding:"required,min=1,max=100"`
+}
+
+// LoginLogResponse 登录日志查询响应
+type LoginLogResponse struct {
+	Logs       []*model.LoginLog `json:"logs"`
+	Total      int               `json:"total"`
+	Page       int               `json:"page"`
+	PageSize   int               `json:"page_size"`
+	TotalPages int               `json:"total_pages"`
+}
+
+// GetLoginLogs 获取登录日志
+func (s *Service) GetLoginLogs(ctx context.Context, req *LoginLogRequest) (*LoginLogResponse, error) {
+	// 转换查询参数
+	params := make(map[string]interface{})
+	
+	if req.UserID > 0 {
+		params["user_id"] = req.UserID
+	}
+	
+	if req.IP != "" {
+		params["ip"] = req.IP
+	}
+	
+	if req.Status != nil {
+		params["status"] = *req.Status
+	}
+	
+	if !req.StartTime.IsZero() {
+		params["start_time"] = req.StartTime
+	}
+	
+	if !req.EndTime.IsZero() {
+		params["end_time"] = req.EndTime
+	}
+	
+	// 查询日志
+	logs, total, err := s.repo.GetLoginLogs(ctx, params, req.Page, req.PageSize)
+	if err != nil {
+		return nil, err
+	}
+	
+	// 计算总页数
+	totalPages := (total + req.PageSize - 1) / req.PageSize
+	if totalPages < 1 {
+		totalPages = 1
+	}
+	
+	return &LoginLogResponse{
+		Logs:       logs,
+		Total:      total,
+		Page:       req.Page,
+		PageSize:   req.PageSize,
+		TotalPages: totalPages,
+	}, nil
+}
+
+// GetUserByID 根据ID获取用户
+func (s *Service) GetUserByID(ctx context.Context, userID int64) (*model.User, error) {
+	return s.repo.GetUserByID(ctx, userID)
+}
+
+// UpdateUser 更新用户信息
+func (s *Service) UpdateUser(ctx context.Context, user *model.User) error {
+	user.UpdatedAt = getNow()
+	return s.repo.UpdateUser(ctx, user)
+}
+
+// ListUsers 获取用户列表
+func (s *Service) ListUsers(ctx context.Context, page, pageSize int) ([]*model.UserProfile, int, error) {
+	users, total, err := s.repo.ListUsers(ctx, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	
+	// 转换为UserProfile
+	profiles := make([]*model.UserProfile, len(users))
+	for i, user := range users {
+		profiles[i] = user.ToProfile()
+	}
+	
+	return profiles, total, nil
 } 

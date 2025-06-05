@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/Zkeai/DDPay/internal/model"
@@ -19,13 +20,13 @@ var (
 // GetUserByID 通过ID获取用户
 func (db *DB) GetUserByID(ctx context.Context, id int64) (*model.User, error) {
 	user := &model.User{}
-	query := `SELECT id, email, password, username, avatar, role, status, email_verified, 
+	query := `SELECT id, email, password, username, avatar, role, status, level, email_verified, 
               created_at, updated_at, last_login_at, last_login_ip 
               FROM users WHERE id = ?`
 	
 	err := db.db.QueryRow(ctx, query, id).Scan(
 		&user.ID, &user.Email, &user.Password, &user.Username, &user.Avatar,
-		&user.Role, &user.Status, &user.EmailVerified, &user.CreatedAt,
+		&user.Role, &user.Status, &user.Level, &user.EmailVerified, &user.CreatedAt,
 		&user.UpdatedAt, &user.LastLoginAt, &user.LastLoginIP,
 	)
 	
@@ -42,13 +43,13 @@ func (db *DB) GetUserByID(ctx context.Context, id int64) (*model.User, error) {
 // GetUserByEmail 通过邮箱获取用户
 func (db *DB) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	user := &model.User{}
-	query := `SELECT id, email, password, username, avatar, role, status, email_verified, 
+	query := `SELECT id, email, password, username, avatar, role, status, level, email_verified, 
               created_at, updated_at, last_login_at, last_login_ip 
               FROM users WHERE email = ?`
 	
 	err := db.db.QueryRow(ctx, query, email).Scan(
 		&user.ID, &user.Email, &user.Password, &user.Username, &user.Avatar,
-		&user.Role, &user.Status, &user.EmailVerified, &user.CreatedAt,
+		&user.Role, &user.Status, &user.Level, &user.EmailVerified, &user.CreatedAt,
 		&user.UpdatedAt, &user.LastLoginAt, &user.LastLoginIP,
 	)
 	
@@ -111,11 +112,11 @@ func (db *DB) CreateUser(ctx context.Context, user *model.User) (int64, error) {
 func (db *DB) UpdateUser(ctx context.Context, user *model.User) error {
 	user.UpdatedAt = time.Now()
 	
-	query := `UPDATE users SET username = ?, avatar = ?, status = ?, email_verified = ?, 
+	query := `UPDATE users SET username = ?, avatar = ?, status = ?, level = ?, email_verified = ?, 
               updated_at = ? WHERE id = ?`
 	
 	_, err := db.db.Exec(ctx, query,
-		user.Username, user.Avatar, user.Status, user.EmailVerified,
+		user.Username, user.Avatar, user.Status, user.Level, user.EmailVerified,
 		user.UpdatedAt, user.ID,
 	)
 	
@@ -255,4 +256,132 @@ func (db *DB) CreateLoginLog(ctx context.Context, log *model.LoginLog) error {
 	)
 	
 	return err
+}
+
+// GetLoginLogs 获取登录日志（支持分页和筛选）
+func (db *DB) GetLoginLogs(ctx context.Context, params map[string]interface{}, page, pageSize int) ([]*model.LoginLog, int, error) {
+	// 构建基础查询语句
+	baseQuery := `SELECT id, user_id, login_type, ip, user_agent, status, fail_reason, created_at FROM login_logs`
+	countQuery := `SELECT COUNT(*) FROM login_logs`
+	
+	// 构建WHERE条件
+	var whereConditions []string
+	var args []interface{}
+	
+	// 根据参数构建筛选条件
+	if userID, ok := params["user_id"].(int64); ok && userID > 0 {
+		whereConditions = append(whereConditions, "user_id = ?")
+		args = append(args, userID)
+	}
+	
+	if ip, ok := params["ip"].(string); ok && ip != "" {
+		whereConditions = append(whereConditions, "ip LIKE ?")
+		args = append(args, "%"+ip+"%")
+	}
+	
+	if status, ok := params["status"].(int); ok && (status == 0 || status == 1) {
+		whereConditions = append(whereConditions, "status = ?")
+		args = append(args, status)
+	}
+	
+	if startTime, ok := params["start_time"].(time.Time); ok && !startTime.IsZero() {
+		whereConditions = append(whereConditions, "created_at >= ?")
+		args = append(args, startTime)
+	}
+	
+	if endTime, ok := params["end_time"].(time.Time); ok && !endTime.IsZero() {
+		whereConditions = append(whereConditions, "created_at <= ?")
+		args = append(args, endTime)
+	}
+	
+	// 组合WHERE条件
+	if len(whereConditions) > 0 {
+		whereClause := " WHERE " + strings.Join(whereConditions, " AND ")
+		baseQuery += whereClause
+		countQuery += whereClause
+	}
+	
+	// 添加排序和分页
+	baseQuery += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
+	
+	// 添加分页参数
+	offset := (page - 1) * pageSize
+	args = append(args, pageSize, offset)
+	
+	// 查询总数
+	var total int
+	err := db.db.QueryRow(ctx, countQuery, args[:len(args)-2]...).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
+	
+	// 查询数据
+	rows, err := db.db.Query(ctx, baseQuery, args...)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+	
+	// 解析数据
+	var logs []*model.LoginLog
+	for rows.Next() {
+		log := &model.LoginLog{}
+		err := rows.Scan(
+			&log.ID, &log.UserID, &log.LoginType, &log.IP,
+			&log.UserAgent, &log.Status, &log.FailReason, &log.CreatedAt,
+		)
+		if err != nil {
+			return nil, 0, err
+		}
+		logs = append(logs, log)
+	}
+	
+	if err = rows.Err(); err != nil {
+		return nil, 0, err
+	}
+	
+	return logs, total, nil
+}
+
+// ListUsers 获取用户列表（支持分页）
+func (db *DB) ListUsers(ctx context.Context, page, pageSize int) ([]*model.User, int, error) {
+	// 计算总数
+	var total int
+	countQuery := `SELECT COUNT(*) FROM users`
+	err := db.db.QueryRow(ctx, countQuery).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
+	
+	// 分页查询
+	offset := (page - 1) * pageSize
+	query := `SELECT id, email, password, username, avatar, role, status, level, email_verified, 
+              created_at, updated_at, last_login_at, last_login_ip 
+              FROM users ORDER BY id DESC LIMIT ? OFFSET ?`
+	
+	rows, err := db.db.Query(ctx, query, pageSize, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+	
+	var users []*model.User
+	for rows.Next() {
+		user := &model.User{}
+		err := rows.Scan(
+			&user.ID, &user.Email, &user.Password, &user.Username, &user.Avatar,
+			&user.Role, &user.Status, &user.Level, &user.EmailVerified, &user.CreatedAt,
+			&user.UpdatedAt, &user.LastLoginAt, &user.LastLoginIP,
+		)
+		if err != nil {
+			return nil, 0, err
+		}
+		users = append(users, user)
+	}
+	
+	if err = rows.Err(); err != nil {
+		return nil, 0, err
+	}
+	
+	return users, total, nil
 } 

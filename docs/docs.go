@@ -15,6 +15,625 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/subsite/config": {
+            "get": {
+                "description": "获取分站JSON格式配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "获取分站JSON配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "分站ID",
+                        "name": "subsite_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "保存分站JSON格式配置信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "保存分站JSON配置",
+                "parameters": [
+                    {
+                        "description": "保存分站JSON配置请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subsite/create": {
+            "post": {
+                "description": "创建一个新的分站",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "创建分站",
+                "parameters": [
+                    {
+                        "description": "创建分站请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateSubsiteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subsite/delete": {
+            "delete": {
+                "description": "删除指定的分站",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "删除分站",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "分站ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subsite/info": {
+            "get": {
+                "description": "获取分站详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "获取分站信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subsite/list": {
+            "get": {
+                "description": "获取所有分站列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "获取分站列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subsite/update": {
+            "put": {
+                "description": "更新分站信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subsite"
+                ],
+                "summary": "更新分站",
+                "parameters": [
+                    {
+                        "description": "更新分站请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateSubsiteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/check-email": {
+            "get": {
+                "description": "检查提供的邮箱是否已经注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "检查邮箱是否已存在",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "邮箱地址",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login": {
+            "post": {
+                "description": "通过邮箱密码登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "登录信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login-logs": {
+            "get": {
+                "description": "获取用户登录日志，支持分页和筛选",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取登录日志",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "IP地址",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态(0:失败,1:成功)",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间(格式:2006-01-02T15:04:05Z)",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间(格式:2006-01-02T15:04:05Z)",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/logout": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "注销当前用户的登录状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "注销登录",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/oauth/login": {
+            "post": {
+                "description": "通过OAuth提供商登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "OAuth登录",
+                "parameters": [
+                    {
+                        "description": "OAuth登录信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.OAuthLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/profile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取当前登录用户的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "获取用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "更新当前登录用户的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "更新用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "头像",
+                        "name": "avatar",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/register": {
+            "post": {
+                "description": "通过邮箱验证码注册用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/reset-password": {
+            "post": {
+                "description": "通过验证码重置密码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "重置密码",
+                "parameters": [
+                    {
+                        "description": "重置密码请求",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.ResetPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/send-code": {
+            "post": {
+                "description": "发送邮箱验证码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "发送验证码",
+                "parameters": [
+                    {
+                        "description": "发送验证码请求",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.SendCodeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conf.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/order/create-transaction": {
             "post": {
                 "consumes": [
@@ -29,8 +648,8 @@ const docTemplate = `{
                 "summary": "创建订单",
                 "parameters": [
                     {
-                        "description": "用户登录提交参数",
-                        "name": "req",
+                        "description": "创建订单",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -46,22 +665,28 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "参数错误",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/conf.Response"
                         }
                     },
                     "500": {
-                        "description": "内部错误",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/conf.Response"
                         }
                     }
                 }
             }
         },
-        "/order/status": {
+        "/pay/status": {
             "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "order"
                 ],
@@ -85,13 +710,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/conf.ResponseError"
+                            "$ref": "#/definitions/conf.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/conf.ResponseError"
+                            "$ref": "#/definitions/conf.Response"
                         }
                     }
                 }
@@ -111,16 +736,23 @@ const docTemplate = `{
                 }
             }
         },
-        "conf.ResponseError": {
+        "model.CreateSubsiteReq": {
             "type": "object",
+            "required": [
+                "commission_rate",
+                "name",
+                "subdomain"
+            ],
             "properties": {
-                "code": {
-                    "type": "integer"
+                "commission_rate": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
                 },
-                "err": {
+                "name": {
                     "type": "string"
                 },
-                "msg": {
+                "subdomain": {
                     "type": "string"
                 }
             }
@@ -147,6 +779,153 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "trade_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateSubsiteReq": {
+            "type": "object",
+            "required": [
+                "commission_rate",
+                "id",
+                "name",
+                "subdomain"
+            ],
+            "properties": {
+                "commission_rate": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "description": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "subdomain": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.OAuthLoginRequest": {
+            "type": "object",
+            "required": [
+                "provider",
+                "provider_token",
+                "provider_user_id"
+            ],
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "provider_token": {
+                    "type": "string"
+                },
+                "provider_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "code",
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.ResetPasswordRequest": {
+            "type": "object",
+            "required": [
+                "code",
+                "email",
+                "new_password"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
+        "service.SendCodeRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "type"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "register, reset_password",
                     "type": "string"
                 }
             }

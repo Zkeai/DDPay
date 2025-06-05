@@ -3,6 +3,8 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/Zkeai/DDPay/common/conf"
 	"github.com/Zkeai/DDPay/internal/service"
@@ -347,5 +349,85 @@ func checkEmail(c *gin.Context) {
 		Data: gin.H{
 			"exists": exists,
 		},
+	})
+}
+
+// @Summary 获取登录日志
+// @Description 获取用户登录日志，支持分页和筛选
+// @Tags 用户管理
+// @Accept json
+// @Produce json
+// @Param user_id query int false "用户ID"
+// @Param ip query string false "IP地址"
+// @Param status query int false "状态(0:失败,1:成功)"
+// @Param start_time query string false "开始时间(格式:2006-01-02T15:04:05Z)"
+// @Param end_time query string false "结束时间(格式:2006-01-02T15:04:05Z)"
+// @Param page query int true "页码"
+// @Param page_size query int true "每页大小"
+// @Success 200 {object} conf.Response
+// @Router /api/v1/user/login-logs [get]
+func getLoginLogs(c *gin.Context) {
+	// 解析请求参数
+	var req service.LoginLogRequest
+	
+	// 获取分页参数
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+	req.Page = page
+	
+	pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+	if err != nil || pageSize < 1 || pageSize > 100 {
+		pageSize = 10
+	}
+	req.PageSize = pageSize
+	
+	// 获取筛选参数
+	if userIDStr := c.Query("user_id"); userIDStr != "" {
+		userID, err := strconv.ParseInt(userIDStr, 10, 64)
+		if err == nil && userID > 0 {
+			req.UserID = userID
+		}
+	}
+	
+	req.IP = c.Query("ip")
+	
+	if statusStr := c.Query("status"); statusStr != "" {
+		status, err := strconv.Atoi(statusStr)
+		if err == nil && (status == 0 || status == 1) {
+			req.Status = &status
+		}
+	}
+	
+	if startTimeStr := c.Query("start_time"); startTimeStr != "" {
+		startTime, err := time.Parse(time.RFC3339, startTimeStr)
+		if err == nil {
+			req.StartTime = startTime
+		}
+	}
+	
+	if endTimeStr := c.Query("end_time"); endTimeStr != "" {
+		endTime, err := time.Parse(time.RFC3339, endTimeStr)
+		if err == nil {
+			req.EndTime = endTime
+		}
+	}
+	
+	// 调用service层获取登录日志
+	resp, err := svc.GetLoginLogs(c, &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, conf.Response{
+			Code: http.StatusInternalServerError,
+			Msg:  fmt.Sprintf("获取登录日志失败: %v", err),
+		})
+		return
+	}
+	
+	// 返回查询结果
+	c.JSON(http.StatusOK, conf.Response{
+		Code: http.StatusOK,
+		Msg:  "查询成功",
+		Data: resp,
 	})
 } 

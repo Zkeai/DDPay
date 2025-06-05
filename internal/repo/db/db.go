@@ -1,6 +1,8 @@
 package db
 
 import (
+	"database/sql"
+
 	"github.com/Zkeai/DDPay/common/database"
 )
 
@@ -12,4 +14,9 @@ func NewDB(conf *database.Config) *DB {
 	return &DB{
 		db: database.NewDB(conf),
 	}
+}
+
+// GetDB 返回底层数据库连接
+func (d *DB) GetDB() *sql.DB {
+	return d.db.DB
 }

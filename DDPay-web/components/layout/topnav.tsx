@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { Image } from "@heroui/image";
+import { useTheme } from "next-themes";
 
 import { useTitle } from "@/components/TitleContext";
 import { logout } from "@/lib/afetch";
@@ -43,26 +44,16 @@ export default function TopNav({
     window.location.reload();
   },
 }: TopNavProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { title } = useTitle();
+  const { theme, setTheme } = useTheme();
 
+  // 确保组件挂载后再进行主题相关操作，避免SSR不匹配问题
   useEffect(() => {
-    // 检查系统偏好或本地存储的主题设置
-    const isDark =
-      localStorage.getItem("theme") === "dark" ||
-      (!localStorage.getItem("theme") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-    setIsDarkMode(isDark);
-
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    setMounted(true);
   }, []);
 
   // 点击外部关闭用户菜单
@@ -91,17 +82,8 @@ export default function TopNav({
     // 添加类禁用过渡动画
     document.documentElement.classList.add("disable-transitions");
 
-    const newTheme = !isDarkMode;
-
-    setIsDarkMode(newTheme);
-
-    if (newTheme) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    // 使用next-themes切换主题
+    setTheme(theme === "dark" ? "light" : "dark");
 
     // 短暂延迟后移除禁用过渡的类
     setTimeout(() => {
@@ -150,9 +132,9 @@ export default function TopNav({
           <button
             onClick={toggleTheme}
             className="dark:text-gray-400 text-gray-500 dark:hover:text-gray-300 hover:text-gray-700 dark:bg-gray-800 bg-gray-100 p-2 rounded-full"
-            title={isDarkMode ? "切换到亮色模式" : "切换到暗色模式"}
+            title={theme === "dark" ? "切换到亮色模式" : "切换到暗色模式"}
           >
-            {isDarkMode ? (
+            {mounted && theme === "dark" ? (
               <SunIcon className="w-5 h-5" />
             ) : (
               <MoonIcon className="w-5 h-5" />

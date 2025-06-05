@@ -56,6 +56,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   useEffect(() => {
     const checkTokenValidity = () => {
       const isValid = validateToken();
+
       setIsValidToken(isValid);
 
       // 如果令牌无效且当前不在登录页面，则重定向到登录页
@@ -130,7 +131,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         },
         {
           title: "会员等级",
-          href: "/admin/users/levels",
+          href: "/admin/membership",
           icon: <TagIcon className="w-4 h-4" />,
         },
       ],
@@ -148,6 +149,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           title: "页面管理",
           href: "/admin/site/pages",
           icon: <DocumentTextIcon className="w-4 h-4" />,
+        },
+        {
+          title: "分站管理",
+          href: "/admin/subsite",
+          icon: <BuildingStorefrontIcon className="w-4 h-4" />,
         },
       ],
     },
@@ -340,7 +346,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       await logout();
       router.push("/admin");
     } catch (error) {
-      console.error("注销失败:", error);
       // 即使失败也强制清除本地令牌并跳转
       localStorage.removeItem("auth-storage");
       router.push("/admin");
@@ -594,6 +599,21 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     </div>
                   </div>
                 ))}
+                {/* 添加个人资料链接 */}
+                <div className="rounded-md">
+                  <Link
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                      pathname === "/admin/profile"
+                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                        : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    }`}
+                    href="/admin/profile"
+                    onClick={toggleMobileMenu}
+                  >
+                    <UserIcon className="w-4 h-4 mr-3 flex-shrink-0" />
+                    <span>个人资料</span>
+                  </Link>
+                </div>
               </nav>
 
               {/* 登出按钮 */}

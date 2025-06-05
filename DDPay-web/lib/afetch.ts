@@ -64,15 +64,15 @@ export const afetch = async <T = any>(
                     updateTokens(access_token, refresh_token, expires_in);
                 } else {
                     authStore.logout();
-                    throw new Error('会话已过期，请重新登录');
+
                 }
             } catch (error) {
                 authStore.logout();
-                throw new Error('会话已过期，请重新登录');
+
             }
         } else {
             authStore.logout();
-            throw new Error('未登录或会话已过期，请重新登录');
+
         }
     }
 
@@ -126,27 +126,61 @@ export const afetch = async <T = any>(
 
                 // 如果刷新令牌失败，则登出
                 authStore.logout();
-                throw new Error('会话已过期，请重新登录');
+
             } catch (refreshError) {
                 authStore.logout();
-                throw new Error('会话已过期，请重新登录');
+
             }
         }
 
+        // 克隆响应以避免"body stream already read"错误
+        const clonedResponse = response.clone();
+
         // 检查响应状态
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-
-            throw new Error(errorData.msg || `请求失败: ${response.status}`);
+            try {
+                const errorData = await clonedResponse.json();
+            } catch (parseError) {
+            }
         }
 
         // 解析响应数据
-        const data = await response.json();
+        try {
+            const data = await response.clone().json();
 
-        return data as T;
+            return data as T;
+        } catch (parseError) {
+            // 尝试读取响应文本，帮助调试
+            try {
+                const text = await response.clone().text();
+
+                // 不再自动返回默认数据，而是抛出异常
+                if (!text || text.trim() === '') {
+                    throw new Error("服务器返回空响应");
+                }
+
+                // 尝试修复常见的JSON格式问题
+                if (text.startsWith("\uFEFF")) { // BOM字符
+                    const cleanText = text.substring(1);
+
+                    try {
+                        return JSON.parse(cleanText) as T;
+                    } catch (e) {
+                        throw e;
+                    }
+                }
+
+                // 抛出错误，通知前端
+            } catch (textError) {
+                throw textError;
+            }
+        }
     } catch (error) {
         throw error;
     }
+
+    // 这行永远不会执行，但添加它以满足TypeScript的类型检查
+    return {} as T;
 };
 
 /**
@@ -164,7 +198,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
     });
 
     if (!response.ok) {
-        throw new Error('刷新令牌失败');
+
     }
 
     return await response.json();
@@ -311,5 +345,88 @@ export const logout = async () => {
         // 即使API调用失败，也要清除本地存储的token
         useAuthStore.getState().logout();
         throw error;
+    }
+};
+
+/**
+ * 获取登录日志
+ * @param params 查询参数
+ * @returns 登录日志列表和分页信息
+ */
+export const getLoginLogs = async (params: {
+    user_id?: number;
+    ip?: string;
+    status?: number;
+    start_time?: string;
+    end_time?: string;
+    page: number;
+    page_size: number;
+}) => {
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+
+    if (params.user_id) queryParams.append('user_id', params.user_id.toString());
+    if (params.ip) queryParams.append('ip', params.ip);
+    if (params.status !== undefined) queryParams.append('status', params.status.toString());
+    if (params.start_time) queryParams.append('start_time', params.start_time);
+    if (params.end_time) queryParams.append('end_time', params.end_time);
+    queryParams.append('page', params.page.toString());
+    queryParams.append('page_size', params.page_size.toString());
+
+    try {
+        const response = await afetch<{
+            code: number;
+            msg: string;
+            data: {
+                logs: Array<{
+                    id: number;
+                    user_id: number;
+                    login_type: string;
+                    ip: string;
+                    user_agent: string;
+                    status: number;
+                    fail_reason: string;
+                    created_at: string;
+                }>;
+                total: number;
+                page: number;
+                page_size: number;
+                total_pages: number;
+            };
+        }>(`/api/v1/user/login-logs?${queryParams.toString()}`, {
+            method: 'GET',
+            skipAuth: false, // 确保带上认证信息
+        });
+
+        // 确保返回的数据结构完整
+        if (response && response.data) {
+            return {
+                logs: Array.isArray(response.data.logs) ? response.data.logs : [],
+                total: response.data.total || 0,
+                page: response.data.page || params.page,
+                page_size: response.data.page_size || params.page_size,
+                total_pages: response.data.total_pages || 1
+            };
+        }
+
+        // 如果响应中没有data字段，返回默认值
+        return {
+            logs: [],
+            total: 0,
+            page: params.page,
+            page_size: params.page_size,
+            total_pages: 0
+        };
+    } catch (error) {
+        console.error("获取登录日志失败:", error);
+
+        // 提供一个空的默认结果，避免前端崩溃
+        return {
+            logs: [],
+            total: 0,
+            page: params.page,
+            page_size: params.page_size,
+            total_pages: 0
+        };
     }
 }; 

@@ -17,16 +17,35 @@ export const AuthGuard = ({
   redirectTo = "/admin/dashboard",
 }: AuthGuardProps) => {
   const [isClient, setIsClient] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
   const { isAuthenticated, isTokenExpired } = useAuthStore();
 
-  // 确保在客户端渲染
+  // 确保在客户端渲染并检查认证状态
   useEffect(() => {
     setIsClient(true);
-  }, []);
 
-  // 如果不在客户端，显示加载状态
-  if (!isClient) {
+    // 在状态检查完成后设置isChecking为false
+    const checkAuth = () => {
+      if (isAuthenticated && !isTokenExpired() && redirectTo) {
+        // 仅在显式要求时进行重定向
+        const currentPath = window.location.pathname;
+
+        if (currentPath === "/admin") {
+          router.push(redirectTo);
+        }
+      }
+      setIsChecking(false);
+    };
+
+    // 延迟检查以确保状态已更新
+    const timer = setTimeout(checkAuth, 100);
+
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, isTokenExpired, redirectTo, router]);
+
+  // 如果不在客户端或正在检查状态，显示加载状态
+  if (!isClient || isChecking) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         加载中...

@@ -163,4 +163,32 @@ func refreshToken(c *gin.Context) {
 		Msg:  "令牌刷新成功",
 		Data: tokenPair,
 	})
+}
+
+// adminCheck 管理员验证中间件
+func adminCheck() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 从上下文中获取用户角色
+		role, exists := c.Get("user_role")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, conf.Response{
+				Code: http.StatusUnauthorized,
+				Msg:  "未授权：未找到用户角色",
+			})
+			c.Abort()
+			return
+		}
+
+		// 检查是否为管理员
+		if role.(string) != "admin" {
+			c.JSON(http.StatusForbidden, conf.Response{
+				Code: http.StatusForbidden,
+				Msg:  "禁止访问：仅管理员可操作",
+			})
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
 } 
